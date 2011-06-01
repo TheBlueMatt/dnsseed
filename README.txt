@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS `nodes` (
   `last_seen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `first_up` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`ipv4`,`port`),
-  KEY `last_check` (`last_check`)
+  KEY `last_check` (`last_check`),
+  KEY `last_seen` (`last_seen`)
 );
 
 Running

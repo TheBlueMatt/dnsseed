@@ -19,9 +19,9 @@ try {
 		$i = 0;
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
-			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
+			usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
-			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
+			if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)
 				echo $i."/".$result->num_rows." (".$i/$result->num_rows."%) (1st of 3 rounds)\n";
 		}
 	}
@@ -31,9 +31,9 @@ try {
 		$i = 0;
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
-			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
+			usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
-			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
+			if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)
 				echo $i."/".$result->num_rows." (".$i/$result->num_rows."%) (2nd of 3 rounds)\n";
 		}
 	}
@@ -42,9 +42,9 @@ try {
 		$i = 0;
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
-			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
+			usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
-			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
+			if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)
 				echo $i."/".$result->num_rows." (".$i/$result->num_rows."%) (3rd of 3 rounds)\n";
 		}
 	}

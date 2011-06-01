@@ -21,8 +21,8 @@ $CONFIG['UNACCEP_CHECK_RATE']		 = 3600;
 $CONFIG['PURGE_AGE']			 = 604800;
 // Rate at which nodes which do accept incoming connections are rechecked (seconds)
 $CONFIG['ACCEP_CHECK_RATE']		 = 3600;
-// Sleep time between launching each new attempt to connect to a node (seconds)
-$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 1;
+// Sleep time between launching each new attempt to connect to a node (microseconds)
+$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 1000000;
 
 /*
 TODO: I didnt bother with setting up PDNS to simply pull from the bitcoin db, which

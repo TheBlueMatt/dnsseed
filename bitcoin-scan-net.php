@@ -22,7 +22,7 @@ try {
 			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
 			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
-				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)\n";
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows."%) (1st of 3 rounds)\n";
 		}
 	}
 
@@ -34,7 +34,7 @@ try {
 			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
 			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
-				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (2nd of 3 rounds)\n";
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows."%) (2nd of 3 rounds)\n";
 		}
 	}
 
@@ -45,7 +45,7 @@ try {
 			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
 			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
-				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (3rd of 3 rounds)\n";
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows."%) (3rd of 3 rounds)\n";
 		}
 	}
 } catch (Exception $e) {

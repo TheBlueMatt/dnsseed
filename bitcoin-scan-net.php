@@ -22,7 +22,7 @@ try {
 			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
 			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
-				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)";
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)\n";
 		}
 	}
 

@@ -28,7 +28,7 @@ try {
 		}
 	}
 
-	$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_checked` < NOW() - " . $CONFIG['PURGE_AGE'] . " SEC AND `accepts_incoming` = b'0';");
+	$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_seen` < NOW() - INTERVAL " . $CONFIG['PURGE_AGE'] . " SECOND AND `accepts_incoming` = b'0';");
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_checked` < NOW() - " . $CONFIG['UNACCEP_CHECK_RATE'] . " SEC AND `accepts_incoming` = b'0';")) {
 		$i = 0;
 		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)

@@ -13,13 +13,16 @@ $CONFIG['PDNS_RECORD_TTL']		 = "60";
 
 // The minimum version to be added to the DNS database
 $CONFIG['MIN_VERSION']			 = 31900; // 0.3.19
+// Timeout to connect to nodes
 $CONFIG['CONNECT_TIMEOUT']		 = 5;
-// Rate at which nodes which do not accept incoming connections are rechecked (in seconds)
+// Rate at which nodes which do not accept incoming connections are rechecked (seconds)
 $CONFIG['UNACCEP_CHECK_RATE']		 = 3600;
 // Time since last seen nodes which do not accept incoming connections are removed (seconds)
 $CONFIG['PURGE_AGE']			 = 604800;
-// Rate at which nodes which do accept incoming connections are rechecked (in seconds)
+// Rate at which nodes which do accept incoming connections are rechecked (seconds)
 $CONFIG['ACCEP_CHECK_RATE']		 = 3600;
+// Sleep time between launching each new attempt to connect to a node (seconds)
+$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 1;
 
 /*
 TODO: I didnt bother with setting up PDNS to simply pull from the bitcoin db, which
@@ -55,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `nodes` (
 To bootstrap call php bitcoin-scan.php (the ip of a known-good node)
 ie
 php bitcoin-scan.php `dig +short bluematt.me`
+warning: this node will end up in the database, so call a node by its public ip
 followed by repeated calls to php bitcoin-scan-net.php which will fill the dbs
 quite quickly.
 bitcoin-scan-net.php should also be put on an appropriate cron job, checking

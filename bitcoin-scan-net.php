@@ -1,3 +1,5 @@
+#!/usr/bin/php
+
 <?php
 
 require("config.php");
@@ -14,24 +16,36 @@ try {
 		throw new Exception("\$db is empty");
 
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` IS NULL;")) {
+		$i = 0;
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
-			sleep(1);
+			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
+			$i++;
+			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)";
 		}
 	}
 
 	$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_checked` < NOW() - " . $CONFIG['PURGE_AGE'] . " SEC AND `accepts_incoming` = b'0';");
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_checked` < NOW() - " . $CONFIG['UNACCEP_CHECK_RATE'] . " SEC AND `accepts_incoming` = b'0';")) {
+		$i = 0;
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
-			sleep(1);
+			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
+			$i++;
+			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)";
 		}
 	}
 
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_checked` < NOW() - " . $CONFIG['ACCEP_CHECK_RATE'] . " SEC AND `accepts_incoming` = b'1';")) {
+		$i = 0;
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
-			sleep(1);
+			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
+			$i++;
+			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)";
 		}
 	}
 } catch (Exception $e) {

@@ -5,7 +5,7 @@
 require("config.php");
 
 function scan_node($ip, $port) {
-	exec("nohup php5 ./bitcoin-scan.php ".long2ip($ip).":".$port." > /dev/null 2>/dev/null &");
+	exec("nohup ./bitcoin-scan.php ".long2ip($ip).":".$port." > /dev/null 2>/dev/null &");
 }
 
 try {
@@ -34,7 +34,7 @@ try {
 			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
 			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
-				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)";
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (2nd of 3 rounds)\n";
 		}
 	}
 
@@ -45,7 +45,7 @@ try {
 			sleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 			$i++;
 			if ($i % floor(60 / $CONFIG['SLEEP_BETWEEN_CONNECT']) == 0)
-				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (1st of 3 rounds)";
+				echo $i."/".$result->num_rows." (".$i/$result->num_rows.")% (3rd of 3 rounds)\n";
 		}
 	}
 } catch (Exception $e) {

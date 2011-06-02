@@ -16,12 +16,12 @@ $CONFIG['MIN_VERSION']			 = 31900; // 0.3.19
 // Timeout to connect to nodes
 $CONFIG['CONNECT_TIMEOUT']		 = 5;
 // Rate at which nodes which do not accept incoming connections are rechecked (seconds)
-$CONFIG['UNACCEP_CHECK_RATE']		 = 3600;
+$CONFIG['UNACCEP_CHECK_RATE']		 = 43200;
 // Time since last seen nodes which do not accept incoming connections are removed (seconds)
 $CONFIG['PURGE_AGE']			 = 604800;
 // Rate at which nodes which do accept incoming connections are rechecked (seconds)
-$CONFIG['ACCEP_CHECK_RATE']		 = 3600;
+$CONFIG['ACCEP_CHECK_RATE']		 = 21600;
 // Sleep time between launching each new attempt to connect to a node (microseconds)
-$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 1000000;
+$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 500000;
 
 ?>

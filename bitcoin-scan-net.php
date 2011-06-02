@@ -17,7 +17,7 @@ try {
 
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` IS NULL;")) {
 		$i = 0;
-		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)
+		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0 && $result->num_rows != 0)
 			echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (1st of 3 rounds)\n";
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
@@ -31,7 +31,7 @@ try {
 	$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_seen` < NOW() - INTERVAL " . $CONFIG['PURGE_AGE'] . " SECOND AND `accepts_incoming` = b'0';");
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['UNACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'0';")) {
 		$i = 0;
-		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)
+		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0 && $result->num_rows != 0)
 			echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (2nd of 3 rounds)\n";
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);
@@ -44,7 +44,7 @@ try {
 
 	if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['ACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'1';")) {
 		$i = 0;
-		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0)
+		if ($i % floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000)) == 0 && $result->num_rows != 0)
 			echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (3rd of 3 rounds)\n";
 		while ($row = $result->fetch_assoc()) {
 			scan_node($row['ipv4'], $row['port']);

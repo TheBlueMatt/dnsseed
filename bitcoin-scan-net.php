@@ -42,7 +42,7 @@ try {
 				scan_node($row['ipv4'], $row['port']);
 				usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 				$i++;
-				if ($i % $time) == 0)
+				if ($i % $time == 0)
 					echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (2nd of 3 rounds)\n";
 			}
 		}
@@ -51,13 +51,13 @@ try {
 	if (!isset($argv[1]) || $argv[1] == "accepting") {
 		if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['ACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'1';")) {
 			$i = 0;
-			if ($i % $time) == 0 && $result->num_rows != 0)
+			if ($i % $time == 0 && $result->num_rows != 0)
 				echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (3rd of 3 rounds)\n";
 			while ($row = $result->fetch_assoc()) {
 				scan_node($row['ipv4'], $row['port']);
 				usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 				$i++;
-				if ($i % $time) == 0)
+				if ($i % $time == 0)
 					echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (3rd of 3 rounds)\n";
 			}
 		}

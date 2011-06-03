@@ -73,11 +73,11 @@ function remove_node($ip, $port) {
 
 	if (!empty($ip) && ip2long($ip) != 0)
 		$db->query("DELETE FROM `".$CONFIG['MYSQL_PDNS_DB']."`.`".$CONFIG['MYSQL_PDNS_RECORDS_TABLE']."` WHERE "
-			."`domain_id` = '" . $CONFIG['PDNS_DOMAIN_ID'] . "', "
-			."`name` = '" . $CONFIG['PDNS_DOMAIN_NAME'] . "', "
-			."`type` = 'A', "
-			."`content` = '" . $ip . "', "
-			."`ttl` = '" . $CONFIG['PDNS_RECORD_TTL'] . "', "
+			."`domain_id` = '" . $CONFIG['PDNS_DOMAIN_ID'] . "' AND "
+			."`name` = '" . $CONFIG['PDNS_DOMAIN_NAME'] . "' AND "
+			."`type` = 'A' AND "
+			."`content` = '" . $ip . "' AND "
+			."`ttl` = '" . $CONFIG['PDNS_RECORD_TTL'] . "' AND "
 			."`prio` = '0';");
 }
 

@@ -33,7 +33,6 @@ try {
 	}
 
 	if (!isset($argv[1]) || $argv[1] == "unaccepting") {
-		$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_seen` < NOW() - INTERVAL " . $CONFIG['PURGE_AGE'] . " SECOND AND `accepts_incoming` = b'0';");
 		if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['UNACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'0' ORDER BY `last_check` DESC;")) {
 			$i = 0;
 			if ($i % $time == 0 && $result->num_rows != 0)
@@ -46,6 +45,7 @@ try {
 					echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (2nd of 3 rounds)\n";
 			}
 		}
+		$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_seen` < NOW() - INTERVAL " . $CONFIG['PURGE_AGE'] . " SECOND AND `accepts_incoming` = b'0';");
 	}
 
 	if (!isset($argv[1]) || $argv[1] == "accepting") {

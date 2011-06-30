@@ -18,14 +18,17 @@ $port = count($arr)==1 ? 8333 : $arr[1];
 try {
 	$origNode = new Bitcoin\Node($arr[0], $port, $CONFIG['CONNECT_TIMEOUT']);
 
+	start_db_transaction();
 	if ($port == 8333)
 		add_node_to_dns($arr[0], $origNode->getVersion());
 
 	$nodes = $origNode->getAddr();
 	foreach ($nodes as &$node)
 		add_untested_node($node["ipv4"], $node["port"]);
+	commit_db_transaction();
 } catch (Exception $e) {
 	remove_node($arr[0], $port);
+	commit_db_transaction();
 }
 
 exit;

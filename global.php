@@ -21,6 +21,14 @@ function connect_to_db() {
 }
 
 // Functions used only by bitcoin-scan.php
+function start_db_transaction() {
+
+}
+
+function commit_db_transaction() {
+
+}
+
 function add_node_to_dns($ip, $version) {
 	global $db, $CONFIG;
 	if (empty($db))
@@ -122,7 +130,7 @@ function connect_to_db() {
 	$db = new SQLite3($CONFIG['SQLITE_FILE']);
 	if (empty($db))
 		die("\$db is empty");
-	$db->query("CREATE TABLE IF NOT EXISTS nodes (
+	$db->exec("CREATE TABLE IF NOT EXISTS nodes (
 			ipv4 INT NOT NULL,
 			port INT NOT NULL DEFAULT 8333,
 			last_check INT DEFAULT NULL,
@@ -132,19 +140,36 @@ function connect_to_db() {
 			first_up INT DEFAULT NULL,
 			PRIMARY KEY (ipv4,port)
 		);");
+	$db->exec("CREATE INDEX IF NOT EXISTS last_seen ON nodes(last_seen); CREATE INDEX IF NOT EXISTS last_check ON nodes(last_check);");
 }
 
 // Functions used only by bitcoin-scan.php
+function start_db_transaction() {
+	global $db, $CONFIG;
+	if (empty($db))
+		connect_to_db();
+
+	$db->exec("BEGIN EXCLUSIVE TRANSACTION;");
+}
+
+function commit_db_transaction() {
+	global $db, $CONFIG;
+	if (empty($db))
+		connect_to_db();
+
+	$db->exec("COMMIT TRANSACTION;");
+}
+
 function add_node_to_dns($ip, $version) {
 	global $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 
 	if (!empty($ip) && ip2long($ip) != 0 && is_numeric($version) && $version > 0) {
-		$db->query("INSERT INTO nodes "
+		@$db->exec("INSERT INTO nodes "
 			."(ipv4, accepts_incoming, last_check, version, last_seen, first_up) VALUES "
 			."(" . ip2long($ip) . " , 1, ".time().", " . $version . ",".time().", ".time().");");
-		$db->query("UPDATE nodes SET "
+		$db->exec("UPDATE nodes SET "
 			."accepts_incoming = 1, "
 			."last_check = ".time().", "
 			."version = " . $version . ", "
@@ -165,10 +190,10 @@ function add_untested_node($ip, $port) {
 		connect_to_db();
 
 	if (!empty($ip) && ip2long($ip) != 0 && !empty($port) && is_numeric($port) && $port != 0) {
-		$db->query("INSERT INTO nodes "
+		@$db->exec("INSERT INTO nodes "
 			."(ipv4, port, last_seen) VALUES "
 			."(" . ip2long($ip) . ", " . $port . ", ".time().");");
-		$db->query("UPDATE nodes SET "
+		$db->exec("UPDATE nodes SET "
 			."last_seen = " . time() . " WHERE "
 			."ipv4 = " . ip2long($ip) . " AND "
 			."port = " . $port . ";");
@@ -181,7 +206,7 @@ function remove_node($ip, $port) {
 		connect_to_db();
 
 	if (!empty($ip) && ip2long($ip) != 0 && !empty($port) && is_numeric($port) && $port != 0)
-		$db->query("UPDATE nodes SET "
+		$db->exec("UPDATE nodes SET "
 			."last_check = " . time() . ", "
 			."accepts_incoming = 0 WHERE "
 			."ipv4 = " . ip2long($ip) . " AND "

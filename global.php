@@ -163,7 +163,7 @@ function start_db_transaction() {
 			die ("Transaction create failed");
 	}
 
-	$one_transaction = true;
+	$transaction_open = true;
 }
 
 function commit_db_transaction() {

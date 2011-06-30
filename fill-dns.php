@@ -17,6 +17,7 @@ if(flock($file, LOCK_EX)) {
 		}
 		$i++;
 	}
+	fseek($file, 0);
 	ftruncate($file, 0);
 	while (($line = fgets($headerfile)) !== false) {
 		if (strpos($line, "; Serial") !== false)

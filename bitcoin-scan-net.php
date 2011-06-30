@@ -3,62 +3,64 @@
 <?php
 
 require("config.php");
-
-function scan_node($ip, $port) {
-	exec("nohup ./bitcoin-scan.php ".long2ip($ip).":".$port." > /dev/null 2>/dev/null &");
-}
+require("global.php");
 
 try {
-	$db = new mysqli($CONFIG['MYSQL_HOST'], $CONFIG['MYSQL_USER'], $CONFIG['MYSQL_PASS'], $CONFIG['MYSQL_BITCOIN_DB']);
-	if ($db->connect_errno)
-		throw new Exception($db->connect_error);
-	if (empty($db))
-		throw new Exception("\$db is empty");
+	connect_to_db();
 
 	$time = floor(60 / ($CONFIG['SLEEP_BETWEEN_CONNECT'] / 1000000));
 
 	if (!isset($argv[1]) || $argv[1] == "unchecked") {
-		if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` IS NULL ORDER BY `last_check` DESC;")) {
+		$result = query_unchecked();
+		if (!empty($result)) {
 			$i = 0;
-			if ($i % $time == 0 && $result->num_rows != 0)
-				echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (1st of 3 rounds)\n";
-			while ($row = $result->fetch_assoc()) {
+			if ($i % $time == 0 && get_count_of_results($result) != 0)
+				echo $i."/".get_count_of_results($result)." (".$i*100/get_count_of_results($result)."%) (1st of 3 rounds)\n";
+			$row = get_assoc_result_row($result);
+			while (!empty($row)) {
 				scan_node($row['ipv4'], $row['port']);
 				usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 				$i++;
 				if ($i % $time == 0)
-					echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (1st of 3 rounds)\n";
+					echo $i."/".get_count_of_results($result)." (".$i*100/get_count_of_results($result)."%) (1st of 3 rounds)\n";
+				$row = get_assoc_result_row($result);
 			}
 		}
 	}
 
 	if (!isset($argv[1]) || $argv[1] == "unaccepting") {
-		if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['UNACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'0' ORDER BY `last_check` DESC;")) {
+		$result = query_unaccepting();
+		if (!empty($result)) {
 			$i = 0;
-			if ($i % $time == 0 && $result->num_rows != 0)
-				echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (2nd of 3 rounds)\n";
-			while ($row = $result->fetch_assoc()) {
+			if ($i % $time == 0 && get_count_of_results($result) != 0)
+				echo $i."/".get_count_of_results($result)." (".$i*100/get_count_of_results($result)."%) (2nd of 3 rounds)\n";
+			$row = get_assoc_result_row($result);
+			while (!empty($row)) {
 				scan_node($row['ipv4'], $row['port']);
 				usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 				$i++;
 				if ($i % $time == 0)
-					echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (2nd of 3 rounds)\n";
+					echo $i."/".get_count_of_results($result)." (".$i*100/get_count_of_results($result)."%) (2nd of 3 rounds)\n";
+				$row = get_assoc_result_row($result);
 			}
 		}
-		$db->query("DELETE FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_seen` < NOW() - INTERVAL " . $CONFIG['PURGE_AGE'] . " SECOND AND `accepts_incoming` = b'0';");
+		prune_nodes();
 	}
 
 	if (!isset($argv[1]) || $argv[1] == "accepting") {
-		if ($result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['ACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'1' ORDER BY `last_check` DESC;")) {
+		$result = query_accepting();
+		if (!empty($result)) {
 			$i = 0;
-			if ($i % $time == 0 && $result->num_rows != 0)
-				echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (3rd of 3 rounds)\n";
-			while ($row = $result->fetch_assoc()) {
+			if ($i % $time == 0 && get_count_of_results($result) != 0)
+				echo $i."/".get_count_of_results($result)." (".$i*100/get_count_of_results($result)."%) (3rd of 3 rounds)\n";
+			$row = get_assoc_result_row($result);
+			while (!empty($row)) {
 				scan_node($row['ipv4'], $row['port']);
 				usleep($CONFIG['SLEEP_BETWEEN_CONNECT']);
 				$i++;
 				if ($i % $time == 0)
-					echo $i."/".$result->num_rows." (".$i*100/$result->num_rows."%) (3rd of 3 rounds)\n";
+					echo $i."/".get_count_of_results($result)." (".$i*100/get_count_of_results($result)."%) (3rd of 3 rounds)\n";
+				$row = get_assoc_result_row($result);
 			}
 		}
 	}

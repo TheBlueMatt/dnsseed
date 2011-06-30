@@ -4,7 +4,7 @@
 require("config.php");
 require("global.php");
 
-$file = fopen($CONFIG['BIND_RECORD_FILE'], "r+");
+$file = fopen($CONFIG['BIND_RECORD_FILE'], "w");
 $headerfile = fopen($CONFIG['BIND_HEADER_FILE'], "r");
 if(flock($file, LOCK_EX)) {
 	stream_copy_to_stream($headerfile, $file);

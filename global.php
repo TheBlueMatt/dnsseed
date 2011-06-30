@@ -261,7 +261,7 @@ function get_count_of_results($result) {
 	return count($result);
 }
 
-function get_assoc_result_row($result) {
+function get_assoc_result_row(&$result) {
 	return array_shift($result);
 }
 

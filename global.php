@@ -167,7 +167,7 @@ function add_node_to_dns($ip, $version) {
 		connect_to_db();
 
 	if (!empty($ip) && ip2long($ip) != 0 && is_numeric($version) && $version > 0) {
-		$db->exec("INSERT INTO nodes "
+		@$db->exec("INSERT INTO nodes "
 			."(ipv4, accepts_incoming, last_check, version, last_seen, first_up) VALUES "
 			."(" . ip2long($ip) . " , 1, ".time().", " . $version . ",".time().", ".time().");");
 		$db->exec("UPDATE nodes SET "

@@ -110,6 +110,10 @@ function query_accepting() {
 	return $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['ACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'1' ORDER BY `last_check` DESC;");
 }
 
+function init_results($result) {
+	return $result;
+}
+
 function get_count_of_results($result) {
 	return $result->num_rows;
 }
@@ -222,7 +226,7 @@ function remove_node($ip, $port) {
 
 // Functions used only by bitcoin-scan-net.php
 function scan_node($ip, $port) {
-	exec("nohup ./bitcoin-scan.php ".long2ip($ip).":".$port." > /dev/null 2>/dev/null &");
+	exec("nohup ./bitcoin-scan.php ".long2ip($ip).":".$port." >> ./log 2>>./log &");
 }
 
 function query_unchecked() {
@@ -236,6 +240,17 @@ function query_unaccepting() {
 	return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $current_time . " AND accepts_incoming = 0 ORDER BY last_check DESC;");
 }
 
+function init_results($result) {
+	$rows = array();
+	$row = $result->fetchArray(SQLITE3_ASSOC);
+	while (!empty($row)) {
+		$rows[] = $row;
+		$row = $result->fetchArray(SQLITE3_ASSOC);
+	}
+	$result->finalize();
+	return $rows;
+}
+
 function query_accepting() {
 	global $db, $CONFIG;
 	$current_time = time() - $CONFIG['ACCEP_CHECK_RATE'];
@@ -243,11 +258,11 @@ function query_accepting() {
 }
 
 function get_count_of_results($result) {
-	return -1;
+	return count($result);
 }
 
 function get_assoc_result_row($result) {
-	return $result->fetchArray(SQLITE3_ASSOC);
+	return array_shift($result);
 }
 
 function prune_nodes() {

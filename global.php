@@ -226,7 +226,7 @@ function remove_node($ip, $port) {
 
 // Functions used only by bitcoin-scan-net.php
 function scan_node($ip, $port) {
-	exec("nohup ./bitcoin-scan.php ".long2ip($ip).":".$port." >> ./log 2>>./log &");
+	exec("nohup ./bitcoin-scan.php ".long2ip($ip).":".$port." > /dev/null 2>/dev/null &");
 }
 
 function query_unchecked() {

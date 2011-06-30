@@ -4,10 +4,25 @@
 require("config.php");
 require("global.php");
 
-$file = fopen($CONFIG['BIND_RECORD_FILE'], "w");
+$file = fopen($CONFIG['BIND_RECORD_FILE'], "r+");
 $headerfile = fopen($CONFIG['BIND_HEADER_FILE'], "r");
 if(flock($file, LOCK_EX)) {
-	stream_copy_to_stream($headerfile, $file);
+	$i = 0;
+	$serial = 1;
+	while (($line = fgets($file)) !== false && $i < 11) {
+		if (strpos($line, "; Serial") !== false) {
+			sscanf($line, "\t\t\t%i\t\t; Serial\n", $serial);
+			break;
+		}
+		$i++;
+	}
+	ftruncate($file, 0);
+	while (($line = fgets($headerfile)) !== false) {
+		if (strpos($line, "; Serial") !== false)
+			fwrite($file, "\t\t\t".$serial."\t\t; Serial\n");
+		else
+			fwrite($file, $line);
+	}
 	fclose($headerfile);
 	connect_to_db();
 	$result = get_list_of_nodes_for_dns();

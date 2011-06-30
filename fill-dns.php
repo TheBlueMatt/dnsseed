@@ -28,6 +28,7 @@ if(flock($file, LOCK_EX)) {
 	fclose($headerfile);
 	connect_to_db();
 	$result = get_list_of_nodes_for_dns();
+	$result = init_results($result);
 	$row = get_assoc_result_row($result);
 	while (!empty($row)) {
 		fwrite($file, $CONFIG['DOMAIN_NAME'] . ".\tIN\tA\t" . long2ip($row['ipv4']) . "\n");

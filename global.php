@@ -130,6 +130,7 @@ function connect_to_db() {
 	$db = new SQLite3($CONFIG['SQLITE_FILE']);
 	if (empty($db))
 		die("\$db is empty");
+	$db->busyTimeout(5000);
 	$db->exec("CREATE TABLE IF NOT EXISTS nodes (
 			ipv4 INT NOT NULL,
 			port INT NOT NULL DEFAULT 8333,

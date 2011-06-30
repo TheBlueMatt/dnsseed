@@ -146,20 +146,24 @@ function connect_to_db() {
 
 // Functions used only by bitcoin-scan.php
 function start_db_transaction() {
-	global $db, $CONFIG;
+	global $one_transaction, $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 
-	if (!$db->exec("BEGIN TRANSACTION;"))
+	if ($one_transaction && !$db->exec("BEGIN TRANSACTION;"))
 		die ("Transaction create failed");
+
+	$one_transaction = 1;
 }
 
 function commit_db_transaction() {
-	global $db, $CONFIG;
+	global $one_transaction, $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 
-	@$db->exec("COMMIT TRANSACTION;");
+	if (!$one_transaction)
+		@$db->exec("COMMIT TRANSACTION;");
+	$one_transaction = 0;
 }
 
 function add_node_to_dns($ip, $version) {

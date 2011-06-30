@@ -27,6 +27,7 @@ try {
 		add_untested_node($node["ipv4"], $node["port"]);
 	commit_db_transaction();
 } catch (Exception $e) {
+	start_db_transaction();
 	remove_node($arr[0], $port);
 	commit_db_transaction();
 }

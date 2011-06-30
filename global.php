@@ -163,7 +163,7 @@ function start_db_transaction() {
 }
 
 function commit_db_transaction() {
-	global $db, $CONFIG;
+	global $lock_file, $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 

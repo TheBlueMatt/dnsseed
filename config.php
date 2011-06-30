@@ -9,11 +9,14 @@ $CONFIG['MYSQL_BITCOIN_TABLE']		 = "nodes";
 $CONFIG['MYSQL_PDNS_DB']		 = "powerdns";
 $CONFIG['MYSQL_PDNS_RECORDS_TABLE']	 = "records";
 $CONFIG['PDNS_DOMAIN_ID']		 = "2";
-$CONFIG['PDNS_DOMAIN_NAME']		 = "dnsseed.bitcoin.bit";
-$CONFIG['PDNS_RECORD_TTL']		 = "60";
 */
 
 $CONFIG['SQLITE_FILE']			 = "bitcoin.sqlite";
+$CONFIG['BIND_HEADER_FILE']		 = "/etc/bind/db.dnsseed.bitcoin.bit.header";
+$CONFIG['BIND_RECORD_FILE']		 = "/etc/bind/db.dnsseed.bitcoin.bit";
+
+$CONFIG['DOMAIN_NAME']			 = "dnsseed.bitcoin.bit";
+$CONFIG['RECORD_TTL']			 = "60";
 
 // The minimum version to be added to the DNS database
 $CONFIG['MIN_VERSION']			 = 31900; // 0.3.19

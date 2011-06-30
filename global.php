@@ -49,7 +49,7 @@ function add_node_to_dns($ip, $version) {
 	if (!empty($ip) && ip2long($ip) != 0 && $version >= $CONFIG['MIN_VERSION'])
 		$db->query("INSERT INTO `".$CONFIG['MYSQL_PDNS_DB']."`.`".$CONFIG['MYSQL_PDNS_RECORDS_TABLE']."` "
 			."(`domain_id`, `name`, `type`, `content`, `ttl`, `prio`, `change_date`) VALUES "
-			."('" . $CONFIG['PDNS_DOMAIN_ID'] . "', '" . $CONFIG['PDNS_DOMAIN_NAME'] . "', 'A', '" . $ip . "', '" . $CONFIG['PDNS_RECORD_TTL'] . "', '0', '" . date("Ymd") . "00');");
+			."('" . $CONFIG['PDNS_DOMAIN_ID'] . "', '" . $CONFIG['DOMAIN_NAME'] . "', 'A', '" . $ip . "', '" . $CONFIG['PDNS_RECORD_TTL'] . "', '0', '" . date("Ymd") . "00');");
 }
 
 function add_untested_node($ip, $port) {
@@ -83,7 +83,7 @@ function remove_node($ip, $port) {
 	if (!empty($ip) && ip2long($ip) != 0)
 		$db->query("DELETE FROM `".$CONFIG['MYSQL_PDNS_DB']."`.`".$CONFIG['MYSQL_PDNS_RECORDS_TABLE']."` WHERE "
 			."`domain_id` = '" . $CONFIG['PDNS_DOMAIN_ID'] . "' AND "
-			."`name` = '" . $CONFIG['PDNS_DOMAIN_NAME'] . "' AND "
+			."`name` = '" . $CONFIG['DOMAIN_NAME'] . "' AND "
 			."`type` = 'A' AND "
 			."`content` = '" . $ip . "' AND "
 			."`ttl` = '" . $CONFIG['PDNS_RECORD_TTL'] . "' AND "
@@ -139,8 +139,9 @@ function connect_to_db() {
 			last_seen INT NOT NULL,
 			first_up INT DEFAULT NULL,
 			PRIMARY KEY (ipv4,port)
-		);");
-	$db->exec("CREATE INDEX IF NOT EXISTS last_seen ON nodes(last_seen); CREATE INDEX IF NOT EXISTS last_check ON nodes(last_check);");
+		);
+		CREATE INDEX IF NOT EXISTS last_seen ON nodes(last_seen);
+		CREATE INDEX IF NOT EXISTS last_check ON nodes(last_check);");
 }
 
 // Functions used only by bitcoin-scan.php
@@ -157,7 +158,7 @@ function commit_db_transaction() {
 	if (empty($db))
 		connect_to_db();
 
-	$db->exec("COMMIT TRANSACTION;");
+	@$db->exec("COMMIT TRANSACTION;");
 }
 
 function add_node_to_dns($ip, $version) {
@@ -166,7 +167,7 @@ function add_node_to_dns($ip, $version) {
 		connect_to_db();
 
 	if (!empty($ip) && ip2long($ip) != 0 && is_numeric($version) && $version > 0) {
-		@$db->exec("INSERT INTO nodes "
+		$db->exec("INSERT INTO nodes "
 			."(ipv4, accepts_incoming, last_check, version, last_seen, first_up) VALUES "
 			."(" . ip2long($ip) . " , 1, ".time().", " . $version . ",".time().", ".time().");");
 		$db->exec("UPDATE nodes SET "
@@ -177,12 +178,7 @@ function add_node_to_dns($ip, $version) {
 			."first_up = CASE WHEN first_up > 0 THEN first_up ELSE ".time()." END "
 			."WHERE ipv4 = " . ip2long($ip) . " AND port = 8333;");
 	}
-/*
-	if (!empty($ip) && ip2long($ip) != 0 && $version >= $CONFIG['MIN_VERSION'])
-		$db->query("INSERT INTO `".$CONFIG['MYSQL_PDNS_DB']."`.`".$CONFIG['MYSQL_PDNS_RECORDS_TABLE']."` "
-			."(`domain_id`, `name`, `type`, `content`, `ttl`, `prio`, `change_date`) VALUES "
-			."('" . $CONFIG['PDNS_DOMAIN_ID'] . "', '" . $CONFIG['PDNS_DOMAIN_NAME'] . "', 'A', '" . $ip . "', '" . $CONFIG['PDNS_RECORD_TTL'] . "', '0', '" . date("Ymd") . "00');");
-*/}
+}
 
 function add_untested_node($ip, $port) {
 	global $db, $CONFIG;
@@ -211,15 +207,6 @@ function remove_node($ip, $port) {
 			."accepts_incoming = 0 WHERE "
 			."ipv4 = " . ip2long($ip) . " AND "
 			."port = " . $port . ";");
-/*
-	if (!empty($ip) && ip2long($ip) != 0)
-		$db->query("DELETE FROM `".$CONFIG['MYSQL_PDNS_DB']."`.`".$CONFIG['MYSQL_PDNS_RECORDS_TABLE']."` WHERE "
-			."`domain_id` = '" . $CONFIG['PDNS_DOMAIN_ID'] . "' AND "
-			."`name` = '" . $CONFIG['PDNS_DOMAIN_NAME'] . "' AND "
-			."`type` = 'A' AND "
-			."`content` = '" . $ip . "' AND "
-			."`ttl` = '" . $CONFIG['PDNS_RECORD_TTL'] . "' AND "
-			."`prio` = '0';");*/
 }
 
 // Functions used only by bitcoin-scan-net.php
@@ -256,5 +243,11 @@ function prune_nodes() {
 	global $db, $CONFIG;
 	$current_time = time() - $CONFIG['PURGE_AGE'];
 	$db->query("DELETE FROM nodes WHERE last_seen < " . $current_time . " AND accepts_incoming = 0;");
+}
+
+// Functions used only by fill-dns.php
+function get_list_of_nodes_for_dns() {
+	global $db, $CONFIG;
+	return $db->query("SELECT ipv4 FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION'].";");
 }
 ?>

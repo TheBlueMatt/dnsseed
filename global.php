@@ -164,11 +164,15 @@ function add_untested_node($ip, $port) {
 	if (empty($db))
 		connect_to_db();
 
-	if (!empty($ip) && ip2long($ip) != 0 && !empty($port) && is_numeric($port) && $port != 0)
+	if (!empty($ip) && ip2long($ip) != 0 && !empty($port) && is_numeric($port) && $port != 0) {
+		$db->query("INSERT INTO nodes "
+			."(ipv4, port, last_seen) VALUES "
+			."(" . ip2long($ip) . ", " . $port . ", ".time().");");
 		$db->query("UPDATE nodes SET "
 			."last_seen = " . time() . " WHERE "
 			."ipv4 = " . ip2long($ip) . " AND "
 			."port = " . $port . ";");
+	}
 }
 
 function remove_node($ip, $port) {

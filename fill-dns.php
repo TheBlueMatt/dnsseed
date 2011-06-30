@@ -13,7 +13,7 @@ if(flock($file, LOCK_EX)) {
 	$result = get_list_of_nodes_for_dns();
 	$row = get_assoc_result_row($result);
 	while (!empty($row)) {
-		fwrite($file, $CONFIG['DOMAIN_NAME'] . "\tIN\tA\t" . long2ip($row['ipv4']));
+		fwrite($file, $CONFIG['DOMAIN_NAME'] . "\tIN\tA\t" . long2ip($row['ipv4'] . "\n"));
 		$row = get_assoc_result_row($result);
 	}
 	flock($file, LOCK_UN);

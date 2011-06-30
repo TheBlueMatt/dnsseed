@@ -130,8 +130,6 @@ function connect_to_db() {
 	$db = new SQLite3($CONFIG['SQLITE_FILE']);
 	if (empty($db))
 		die("\$db is empty");
-
-	start_db_transaction();
 	$db->exec("CREATE TABLE IF NOT EXISTS nodes (
 			ipv4 INT NOT NULL,
 			port INT NOT NULL DEFAULT 8333,
@@ -148,18 +146,11 @@ function connect_to_db() {
 
 // Functions used only by bitcoin-scan.php
 function start_db_transaction() {
-	global $lock_file, $db, $CONFIG;
+	global $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 
-	if (empty($lock_file)) {
-		$lock_file = fopen($CONFIG['SQLITE_FILE'].".lock", "r");
-		if (!flock($lock_file, LOCK_EX)) {
-			echo "LOCK FAILED!!!";
-			exit(1);
-		}
-		$db->exec("BEGIN TRANSACTION;");
-	}
+	$db->exec("BEGIN EXCLUSIVE TRANSACTION;");
 }
 
 function commit_db_transaction() {
@@ -168,8 +159,6 @@ function commit_db_transaction() {
 		connect_to_db();
 
 	@$db->exec("COMMIT TRANSACTION;");
-	flock($lock_file, LOCK_UN);
-	fclose($lock_file);
 }
 
 function add_node_to_dns($ip, $version) {

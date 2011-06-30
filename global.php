@@ -232,7 +232,7 @@ function query_accepting() {
 }
 
 function get_count_of_results($result) {
-	return 0;
+	return -1;
 }
 
 function get_assoc_result_row($result) {

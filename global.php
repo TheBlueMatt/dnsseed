@@ -150,7 +150,8 @@ function start_db_transaction() {
 	if (empty($db))
 		connect_to_db();
 
-	$db->exec("BEGIN TRANSACTION;");
+	if (!$db->exec("BEGIN TRANSACTION;"))
+		die ("Transaction create failed");
 }
 
 function commit_db_transaction() {

@@ -150,7 +150,7 @@ function start_db_transaction() {
 	if (empty($db))
 		connect_to_db();
 
-	$db->exec("BEGIN EXCLUSIVE TRANSACTION;");
+	$db->exec("BEGIN TRANSACTION;");
 }
 
 function commit_db_transaction() {

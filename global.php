@@ -154,8 +154,10 @@ function start_db_transaction() {
 	if (!isset($transaction_open))
 		$transaction_open = false;
 
-	if (!$transaction_open && !$db->exec("BEGIN TRANSACTION;"))
-		die ("Transaction create failed");
+	if (!$transaction_open) {
+		if (!$db->exec("BEGIN TRANSACTION;"))
+			die ("Transaction create failed");
+	}
 
 	$one_transaction = true;
 }

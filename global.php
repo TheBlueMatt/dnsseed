@@ -274,6 +274,6 @@ function prune_nodes() {
 // Functions used only by fill-dns.php
 function get_list_of_nodes_for_dns() {
 	global $db, $CONFIG;
-	return $db->query("SELECT ipv4 FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION'].";");
+	return $db->query("SELECT ipv4 FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION']." ORDER BY RANDOM() LIMIT 20;");
 }
 ?>

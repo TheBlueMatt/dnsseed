@@ -8,10 +8,11 @@ $file = fopen($CONFIG['BIND_RECORD_FILE'], "r+");
 $headerfile = fopen($CONFIG['BIND_HEADER_FILE'], "r");
 if(flock($file, LOCK_EX)) {
 	$i = 0;
-	$serial = 1;
+	$serial = 0;
 	while (($line = fgets($file)) !== false && $i < 11) {
 		if (strpos($line, "; Serial") !== false) {
 			sscanf($line, "\t\t\t%i\t\t; Serial\n", $serial);
+			$serial++;
 			break;
 		}
 		$i++;

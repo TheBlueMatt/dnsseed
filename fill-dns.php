@@ -31,7 +31,7 @@ if(flock($file, LOCK_EX)) {
 	$result = init_results($result);
 	$row = get_assoc_result_row($result);
 	while (!empty($row)) {
-		fwrite($file, $CONFIG['DOMAIN_NAME'] . ".\tIN\tA\t" . long2ip($row['ipv4']) . "\n");
+		fwrite($file, $CONFIG['DOMAIN_NAME'] . ".\t".$CONFIG['RECORD_TTL']."\tIN\tA\t" . long2ip($row['ipv4']) . "\n");
 		$row = get_assoc_result_row($result);
 	}
 	flock($file, LOCK_UN);

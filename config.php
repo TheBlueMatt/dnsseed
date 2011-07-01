@@ -30,5 +30,7 @@ $CONFIG['PURGE_AGE']			 = 604800;
 $CONFIG['ACCEP_CHECK_RATE']		 = 21600;
 // Sleep time between launching each new attempt to connect to a node (microseconds)
 $CONFIG['SLEEP_BETWEEN_CONNECT']	 = 500000;
+// Maximum age of nodes given to us put in database (age in seconds)
+$CONFIG['MIN_LAST_SEEN']		 = 86400;
 
 ?>

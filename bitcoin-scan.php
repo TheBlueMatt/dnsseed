@@ -23,8 +23,10 @@ try {
 	if ($port == 8333)
 		add_node_to_dns($arr[0], $origNode->getVersion());
 
-	foreach ($nodes as &$node)
-		add_untested_node($node["ipv4"], $node["port"]);
+	foreach ($nodes as &$node) {
+		if ($node["services1"] == 1 && $node["services2"] == 0 && $node["timestamp"] >= time() - $CONFIG['MIN_LAST_SEEN'])
+			add_untested_node($node["ipv4"], $node["port"]);
+	}
 	commit_db_transaction();
 } catch (Exception $e) {
 	start_db_transaction();

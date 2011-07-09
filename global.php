@@ -245,12 +245,6 @@ function query_unaccepting() {
 	}
 }
 
-function query_unaccepting() {
-	global $db, $CONFIG;
-	$current_time = time() - $CONFIG['UNACCEP_CHECK_RATE'];
-	return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $current_time . " AND accepts_incoming = 0 ORDER BY last_check DESC;");
-}
-
 function init_results($result) {
 	$rows = array();
 	$row = $result->fetchArray(SQLITE3_ASSOC);

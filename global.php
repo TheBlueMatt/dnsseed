@@ -97,17 +97,17 @@ function scan_node($ip, $port) {
 
 function query_unchecked() {
 	global $db, $CONFIG;
-	return $result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` IS NULL ORDER BY `last_check` DESC;");
+	return $result = $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` IS NULL;");
 }
 
 function query_unaccepting() {
 	global $db, $CONFIG;
-	return $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['UNACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'0' ORDER BY `last_check` DESC;");
+	return $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['UNACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'0' ORDER BY `last_check` ASC;");
 }
 
 function query_accepting() {
 	global $db, $CONFIG;
-	return $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['ACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'1' ORDER BY `last_check` DESC;");
+	return $db->query("SELECT `ipv4`, `port` FROM `".$CONFIG['MYSQL_BITCOIN_TABLE']."` WHERE `last_check` < NOW() - INTERVAL " . $CONFIG['ACCEP_CHECK_RATE'] . " SECOND AND `accepts_incoming` = b'1' ORDER BY `last_check` ASC;");
 }
 
 function init_results($result) {
@@ -231,7 +231,7 @@ function scan_node($ip, $port) {
 
 function query_unchecked() {
 	global $db, $CONFIG;
-	return $result = $db->query("SELECT ipv4, port FROM nodes WHERE last_check IS NULL ORDER BY last_check DESC;");
+	return $result = $db->query("SELECT ipv4, port FROM nodes WHERE last_check IS NULL;");
 }
 
 function query_unaccepting() {
@@ -239,9 +239,9 @@ function query_unaccepting() {
 	$check_time = time() - $CONFIG['UNACCEP_CHECK_RATE'];
 	if ($CONFIG['MIN_UP_TIME_TO_CHECK'] != 0) {
 		$up_time = time() - $CONFIG['MIN_UP_TIME_TO_CHECK'];
-		return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $check_time . " AND accepts_incoming = 0 AND first_up <= " . $up_time . " ORDER BY last_check DESC;");
+		return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $check_time . " AND accepts_incoming = 0 AND first_up <= " . $up_time . " ORDER BY last_check ASC;");
 	}else{
-		return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $check_time . " AND accepts_incoming = 0 ORDER BY last_check DESC;");
+		return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $check_time . " AND accepts_incoming = 0 ORDER BY last_check ASC;");
 	}
 }
 
@@ -259,7 +259,7 @@ function init_results($result) {
 function query_accepting() {
 	global $db, $CONFIG;
 	$current_time = time() - $CONFIG['ACCEP_CHECK_RATE'];
-	return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $current_time . " AND accepts_incoming = 1 ORDER BY last_check DESC;");
+	return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $current_time . " AND accepts_incoming = 1 ORDER BY last_check ASC;");
 }
 
 function get_count_of_results($result) {
@@ -279,6 +279,6 @@ function prune_nodes() {
 // Functions used only by fill-dns.php
 function get_list_of_nodes_for_dns() {
 	global $db, $CONFIG;
-	return $db->query("SELECT ipv4 FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION']." ORDER BY RANDOM() LIMIT 20;");
+	return $db->query("SELECT ipv4 FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION']." ORDER BY last_check DESC LIMIT 20;");
 }
 ?>

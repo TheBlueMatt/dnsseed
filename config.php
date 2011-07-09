@@ -23,14 +23,17 @@ $CONFIG['MIN_VERSION']			 = 31900; // 0.3.19
 // Timeout to connect to nodes
 $CONFIG['CONNECT_TIMEOUT']		 = 5;
 // Rate at which nodes which do not accept incoming connections are rechecked (seconds)
-$CONFIG['UNACCEP_CHECK_RATE']		 = 43200000;
+$CONFIG['UNACCEP_CHECK_RATE']		 = 24 * 60 * 60;
+// Minimum age of nodes before they will be rechecked if they go down
+// 0 will check even if the node has never been up, any other value requires the node to have been up at some point
+$CONFIG['MIN_UP_TIME_TO_CHECK']          = 7 * 24 * 60 * 60;
 // Time since last seen nodes which do not accept incoming connections are removed (seconds)
-$CONFIG['PURGE_AGE']			 = 604800;
+$CONFIG['PURGE_AGE']			 = 48 * 60 * 60;
 // Rate at which nodes which do accept incoming connections are rechecked (seconds)
-$CONFIG['ACCEP_CHECK_RATE']		 = 21600;
+$CONFIG['ACCEP_CHECK_RATE']		 = 4 * 60 * 60;
 // Sleep time between launching each new attempt to connect to a node (microseconds)
-$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 500000;
+$CONFIG['SLEEP_BETWEEN_CONNECT']	 = 500 * 1000;
 // Maximum age of nodes given to us put in database (age in seconds)
-$CONFIG['MIN_LAST_SEEN']		 = 86400;
+$CONFIG['MIN_LAST_SEEN']		 = 24 * 60 * 60;
 
 ?>

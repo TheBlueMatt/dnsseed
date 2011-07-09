@@ -236,6 +236,17 @@ function query_unchecked() {
 
 function query_unaccepting() {
 	global $db, $CONFIG;
+	$check_time = time() - $CONFIG['UNACCEP_CHECK_RATE'];
+	if ($CONFIG['MIN_UP_TIME_TO_CHECK'] != 0) {
+		$up_time = time() - $CONFIG['MIN_UP_TIME_TO_CHECK'];
+		return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $check_time . " AND accepts_incoming = 0 AND first_up <= " . $up_time . " ORDER BY last_check DESC;");
+	}else{
+		return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $check_time . " AND accepts_incoming = 0 ORDER BY last_check DESC;");
+	}
+}
+
+function query_unaccepting() {
+	global $db, $CONFIG;
 	$current_time = time() - $CONFIG['UNACCEP_CHECK_RATE'];
 	return $db->query("SELECT ipv4, port FROM nodes WHERE last_check < " . $current_time . " AND accepts_incoming = 0 ORDER BY last_check DESC;");
 }

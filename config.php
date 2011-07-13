@@ -21,9 +21,9 @@ $CONFIG['RECORD_TTL']			 = "60";
 // The minimum version to be added to the DNS database
 $CONFIG['MIN_VERSION']			 = 31900; // 0.3.19
 // Timeout to connect to nodes
-$CONFIG['CONNECT_TIMEOUT']		 = 5;
+$CONFIG['CONNECT_TIMEOUT']		 = 2;
 // Rate at which nodes which do not accept incoming connections are rechecked (seconds)
-$CONFIG['UNACCEP_CHECK_RATE']		 = 24 * 60 * 60;
+$CONFIG['UNACCEP_CHECK_RATE']		 = 36 * 60 * 60;
 // Minimum age of nodes before they will be rechecked if they go down
 // 0 will check even if the node has never been up, any other value requires the node to have been up at some point
 $CONFIG['MIN_UP_TIME_TO_CHECK']          = 7 * 24 * 60 * 60;

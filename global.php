@@ -281,4 +281,20 @@ function get_list_of_nodes_for_dns() {
 	global $db, $CONFIG;
 	return $db->query("SELECT ipv4 FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION']." ORDER BY last_check DESC LIMIT 20;");
 }
+
+// Functions used only by count-nodes.php
+function query_version_count() {
+	global $db, $CONFIG;
+	return $db->query("SELECT COUNT(*), version FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION']." GROUP BY version ORDER BY version;");
+}
+
+function query_dns_total() {
+	global $db, $CONFIG;
+	return $db->query("SELECT COUNT(*) FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION'].";");
+}
+
+function query_total() {
+	global $db, $CONFIG;
+	return $db->query("SELECT COUNT(*) FROM nodes;");
+}
 ?>

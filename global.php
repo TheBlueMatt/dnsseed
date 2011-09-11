@@ -285,7 +285,7 @@ function get_list_of_nodes_for_dns() {
 // Functions used only by count-nodes.php
 function query_version_count() {
 	global $db, $CONFIG;
-	return $db->query("SELECT COUNT(*), version FROM nodes WHERE accepts_incoming = 1 AND port = 8333 AND version >= ".$CONFIG['MIN_VERSION']." GROUP BY version ORDER BY version;");
+	return $db->query("SELECT COUNT(*), version FROM nodes WHERE accepts_incoming = 1 AND port = 8333 GROUP BY version ORDER BY version;");
 }
 
 function query_dns_total() {

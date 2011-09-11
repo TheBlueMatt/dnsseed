@@ -6,7 +6,7 @@ require("global.php");
 
 connect_to_db();
 $result = query_version_count();
-echo "Nodes viable for DNS (including low version)";
+echo "Nodes viable for DNS (including low version)\n";
 $result = init_results($result);
 while($row = get_assoc_result_row($result)) {
 	echo $row["version"]."\t".$row["COUNT(*)"]."\n";

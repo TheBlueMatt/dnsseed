@@ -19,7 +19,7 @@ $CONFIG['DOMAIN_NAME']			 = "dnsseed.bitcoin.bit";
 $CONFIG['RECORD_TTL']			 = "60";
 
 // The minimum version to be added to the DNS database
-$CONFIG['MIN_VERSION']			 = 31900; // 0.3.19
+$CONFIG['MIN_VERSION']			 = 32400; // 0.3.24
 // Timeout to connect to nodes
 $CONFIG['CONNECT_TIMEOUT']		 = 2;
 // Rate at which nodes which do not accept incoming connections are rechecked (seconds)

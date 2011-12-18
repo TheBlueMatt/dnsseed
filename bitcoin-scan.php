@@ -21,8 +21,8 @@ try {
 
         if (!empty($nodes)) {
 		start_db_transaction();
-		if ($port == 8333)
-			add_node_to_dns($arr[0], $port, $origNode->getVersion());
+
+		add_node_to_dns($arr[0], $port, $origNode->getVersion());
 
 		foreach ($nodes as &$node) {
 			if ($node["services1"] == 1 && $node["services2"] == 0 && $node["timestamp"] >= time() - $CONFIG['MIN_LAST_SEEN'])

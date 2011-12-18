@@ -29,24 +29,24 @@ function commit_db_transaction() {
 
 }
 
-function add_node_to_dns($ip, $version) {
+function add_node_to_dns($ip, $port, $version) {
 	global $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 
-	if (!empty($ip) && ip2long($ip) != 0 && is_numeric($version) && $version > 0) {
+	if (!empty($ip) && ip2long($ip) != 0 && !empty($port) && is_numeric($port) && $port != 0 && is_numeric($version) && $version > 0) {
 		$db->query("INSERT INTO `".$CONFIG['MYSQL_BITCOIN_TABLE']."` "
-			."(`ipv4`, `accepts_incoming`, `last_check`, `version`, `first_up`) VALUES "
-			."('" . ip2long($ip) . "' , b'1', NOW(), '" . $version . "', NOW());");
+			."(`ipv4`, `port`, `accepts_incoming`, `last_check`, `version`, `first_up`) VALUES "
+			."('" . ip2long($ip) . "', '" . $port . "', b'1', NOW(), '" . $version . "', NOW());");
 		$db->query("UPDATE `".$CONFIG['MYSQL_BITCOIN_TABLE']."` SET "
 			."`accepts_incoming` = b'1', "
 			."`last_check` = NOW(), "
 			."`version` = '" . $version . "', "
 			."`first_up` = IF(`first_up` IS NULL, NOW(), `first_up`) "
-			."WHERE `ipv4` = '" . ip2long($ip) . "' AND `port` = '8333';");
+			."WHERE `ipv4` = '" . ip2long($ip) . "' AND `port` = '" . $port . "';");
 	}
 
-	if (!empty($ip) && ip2long($ip) != 0 && $version >= $CONFIG['MIN_VERSION'])
+	if (!empty($ip) && ip2long($ip) != 0 && $version >= $CONFIG['MIN_VERSION'] && $port == 8333)
 		$db->query("INSERT INTO `".$CONFIG['MYSQL_PDNS_DB']."`.`".$CONFIG['MYSQL_PDNS_RECORDS_TABLE']."` "
 			."(`domain_id`, `name`, `type`, `content`, `ttl`, `prio`, `change_date`) VALUES "
 			."('" . $CONFIG['PDNS_DOMAIN_ID'] . "', '" . $CONFIG['DOMAIN_NAME'] . "', 'A', '" . $ip . "', '" . $CONFIG['PDNS_RECORD_TTL'] . "', '0', '" . date("Ymd") . "00');");
@@ -177,22 +177,22 @@ function commit_db_transaction() {
 	$transaction_open = false;
 }
 
-function add_node_to_dns($ip, $version) {
+function add_node_to_dns($ip, $port, $version) {
 	global $db, $CONFIG;
 	if (empty($db))
 		connect_to_db();
 
-	if (!empty($ip) && ip2long($ip) != 0 && is_numeric($version) && $version > 0) {
+	if (!empty($ip) && ip2long($ip) != 0 && !empty($port) && is_numeric($port) && $port != 0 && is_numeric($version) && $version > 0) {
 		@$db->exec("INSERT INTO nodes "
-			."(ipv4, accepts_incoming, last_check, version, last_seen, first_up) VALUES "
-			."(" . ip2long($ip) . " , 1, ".time().", " . $version . ",".time().", ".time().");");
+			."(ipv4, port, accepts_incoming, last_check, version, last_seen, first_up) VALUES "
+			."(" . ip2long($ip) . ", " . $port . ", 1, ".time().", " . $version . ",".time().", ".time().");");
 		$db->exec("UPDATE nodes SET "
 			."accepts_incoming = 1, "
 			."last_check = ".time().", "
 			."version = " . $version . ", "
 			."last_seen = ".time().", "
 			."first_up = CASE WHEN first_up > 0 THEN first_up ELSE ".time()." END "
-			."WHERE ipv4 = " . ip2long($ip) . " AND port = 8333;");
+			."WHERE ipv4 = " . ip2long($ip) . " AND port = " . $port . ";");
 	}
 }
 

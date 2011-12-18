@@ -146,7 +146,8 @@ function connect_to_db() {
 			PRIMARY KEY (ipv4,port)
 		);
 		CREATE INDEX IF NOT EXISTS last_seen ON nodes(last_seen);
-		CREATE INDEX IF NOT EXISTS last_check ON nodes(last_check);");
+		CREATE INDEX IF NOT EXISTS last_check ON nodes(last_check);
+		CREATE INDEX IF NOT EXISTS ipv4_port ON nodes(ipv4, port);");
 }
 
 // Functions used only by bitcoin-scan.php
@@ -273,7 +274,7 @@ function get_assoc_result_row(&$result) {
 function prune_nodes() {
 	global $db, $CONFIG;
 	$current_time = time() - $CONFIG['PURGE_AGE'];
-	$db->query("DELETE FROM nodes WHERE last_seen < " . $current_time . " AND accepts_incoming = 0;");
+	$db->exec("DELETE FROM nodes WHERE last_seen < " . $current_time . " AND accepts_incoming = 0;");
 }
 
 // Functions used only by fill-dns.php

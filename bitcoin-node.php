@@ -122,7 +122,7 @@ class Node {
 		if ($type_pos !== false) $type = substr($type, 0, $type_pos);
 
 		list(,$len) = unpack('V', substr($data, 16, 4));
-		if (($this->version >= 209) && ($type != 'verack')) {
+		if (($this->version >= 209) || ($this->version == 0)) {
 			$checksum = fread($this->sock, 4);
 			$payload = '';
 			while(!feof($this->sock) && (strlen($payload) < $len)) {

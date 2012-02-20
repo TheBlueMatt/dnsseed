@@ -183,7 +183,7 @@ class Node {
 		$packet = "\xf9\xbe\xb4\xd9"; // magic header
 		$packet .= $type . str_repeat("\0", 12-strlen($type));
 		$packet .= pack('V', strlen($data));
-		if ((!is_null($data)) && ($this->version > 0x209)) $packet .= $this->_checksum($data);
+		if ((!is_null($data)) && ($this->version > 0x209 || $this->version == 0)) $packet .= $this->_checksum($data);
 		$packet .= $data;
 		return $packet;
 	}

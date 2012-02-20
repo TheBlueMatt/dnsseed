@@ -17,6 +17,7 @@ $port = count($arr)==1 ? 8333 : $arr[1];
 
 try {
 	$origNode = new Bitcoin\Node($arr[0], $port, $CONFIG['CONNECT_TIMEOUT']);
+	$origNode->getAddr();
 	$nodes = $origNode->getAddr();
 
         if (!empty($nodes)) {
